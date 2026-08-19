@@ -1,0 +1,2 @@
+export const devCheckpoint=(checkpoint,functionName,data={})=>{if(!import.meta.env?.DEV)return;console.info(`[RestMenu frontend] ${checkpoint}`,{functionName,...data})};
+export const devFailure=(checkpoint,functionName,error,data={})=>{if(import.meta.env?.DEV)console.error(`[RestMenu frontend] errore ${checkpoint}`,{functionName,errorType:error?.name,message:error?.message,stack:error?.stack,...data});return error};
