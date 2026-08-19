@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "RestMenu",
+  "short_name": "RestMenu",
+  "description": "Digitalizza e archivia i menu dei tuoi ristoranti.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#174b36",
+  "background_color": "#f8faf7",
+  "icons": [
+    {"src":"/icons/restmenu-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"/icons/restmenu-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"/icons/restmenu-maskable-192.png","sizes":"192x192","type":"image/png","purpose":"maskable"},
+    {"src":"/icons/restmenu-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}

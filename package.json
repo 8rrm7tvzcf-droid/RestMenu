@@ -1,0 +1,1 @@
+{"name":"restmenu","version":"2.0.0","private":true,"type":"module","scripts":{"dev":"node server/index.js","build":"vite build","start":"node server/index.js","test":"node --test tests/*.test.js"},"dependencies":{"@vitejs/plugin-react":"latest","vite":"latest","react":"latest","react-dom":"latest","lucide-react":"latest","tesseract.js":"latest"},"devDependencies":{}}
