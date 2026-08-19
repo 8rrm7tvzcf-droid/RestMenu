@@ -1,15 +1,18 @@
-# Test manuali pipeline Vision
+# Test manuali pipeline Vision a blocchi
 
-Per ogni caso verificare immagine, trascrizione Fase A, struttura Fase B, `sourceLineIds`, confidenza e testo non classificato.
+In sviluppo, dopo ogni scansione eseguire `window.openRestMenuVisionDebug()` nella console. Verificare box, ordine di lettura, crop, confidence e indicazione del retry. In produzione la funzione e i dati debug non devono esistere.
 
-- Due colonne: completare la colonna sinistra prima della destra; nessun prezzo deve attraversare le colonne.
-- Prezzi lontani a destra: associare solo prezzo sulla stessa riga/colonna e visivamente più vicino.
-- Descrizioni su più righe: conservarle complete senza inglobare il piatto successivo.
-- Piatti senza descrizione: lasciare descrizione vuota senza inventarla.
-- Allergeni numerici: mantenere `1, 3, 7` come allergeni o testo, mai come prezzo.
-- Grammature: mantenere `250 g` come formato/nota, mai come prezzo.
-- Più formati e prezzi: conservare tutte le varianti separatamente.
-- Font piccoli: restituire `qualityWarning` e testo parziale a confidenza bassa.
-- Sfondo colorato: non normalizzare o completare parole non leggibili.
+- Una colonna: regioni verticali logiche, senza tagliare descrizioni o prezzi.
+- Due colonne: ordine completo sinistra/destra; nessun prezzo attraversa le colonne.
+- Tre colonne: box aderenti alle sezioni reali, non suddivisioni geometriche arbitrarie.
+- Prezzi molto distanti a destra: piatto e prezzo restano nello stesso blocco o hanno un collegamento visivo esplicito.
+- Font piccoli: crop ingrandito e al massimo un retry; se il testo resta illeggibile, warning e confidence bassa.
+- Sfondo grafico/colorato: nessuna parola ricostruita per intuizione.
+- Descrizioni multilinea: tutte le righe restano nello stesso blocco senza inglobare il piatto seguente.
+- Categorie distribuite su più colonne: unione solo per nome uguale e confidence sufficiente.
+- Foto inclinata: orientamento EXIF corretto; segnalare incertezza se la prospettiva compromette il layout.
+- Foto iPhone ad alta risoluzione: crop nitidi e coordinate corrette dopo l'orientamento.
+- Allergeni numerici e grammature (`1, 3, 7`, `250 g`): mai convertiti in prezzi.
+- Più formati e prezzi: mantenuti come varianti/formati nello stesso blocco.
 
-La somma delle righe usate e non classificate deve coprire tutte le righe della trascrizione.
+Per ogni caso controllare che tutte le `rawTextLines` siano usate tramite `sourceLineIds` oppure conservate in `unclassifiedText`, e che gli elementi dubbi compaiano nella revisione.
