@@ -1,0 +1,6 @@
+import test from'node:test';import assert from'node:assert/strict';import{readFile}from'node:fs/promises';
+const source=await readFile(new URL('../src/main.jsx',import.meta.url),'utf8'),css=await readFile(new URL('../src/lightbox.css',import.meta.url),'utf8');
+test('foto salvate e anteprime aprono il visualizzatore',()=>{assert.match(source,/className="photo-open"/);assert.match(source,/className="preview-open"/);assert.match(source,/setViewer\(i\)/)});
+test('chiusura supporta X sfondo ed ESC',()=>{assert.match(source,/aria-label="Chiudi visualizzatore"/);assert.match(source,/e\.target===e\.currentTarget&&onClose\(\)/);assert.match(source,/e\.key==='Escape'/)});
+test('navigazione supporta frecce tastiera pulsanti e swipe',()=>{assert.match(source,/e\.key==='ArrowLeft'/);assert.match(source,/Immagine precedente/);assert.match(source,/Immagine successiva/);assert.match(source,/onTouchStart/);assert.match(source,/Math\.abs\(distance\)>55/)});
+test('visualizzatore preserva proporzioni e blocca lo scroll',()=>{assert.match(source,/document\.body\.style\.overflow='hidden'/);assert.match(css,/object-fit:contain/);assert.match(css,/max-height:calc/);assert.match(css,/touch-action:pinch-zoom/)});
