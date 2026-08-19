@@ -25,3 +25,8 @@ export const blockSchema={type:'object',additionalProperties:false,required:['bl
  blockConfidence:confidence,qualityWarning:{type:['string','null']},rawTextLines:{type:'array',items:rawLineSchema},
  categories:{type:'array',items:categorySchema},unclassifiedText:{type:'array',items:unclassifiedSchema},warnings:stringArray
 }};
+
+const correctionSchema={type:'object',additionalProperties:false,required:['action','categoryId','targetCategoryId','itemId','reason'],properties:{
+ action:{type:'string',enum:['remove_category','merge_categories','move_item','leave_unclassified']},categoryId:{type:['string','null']},targetCategoryId:{type:['string','null']},itemId:{type:['string','null']},reason:{type:'string'}
+}};
+export const structuralValidationSchema={type:'object',additionalProperties:false,required:['corrections'],properties:{corrections:{type:'array',maxItems:30,items:correctionSchema}}};
