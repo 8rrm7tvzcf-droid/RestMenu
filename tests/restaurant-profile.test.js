@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {profileChanged,updateRestaurantProfile} from '../src/restaurant-profile.js';
+
+const original=()=>({id:'restaurant-1',name:'Vecchio nome',city:'Roma',address:'Via Uno',cuisine:'Italiana',notes:'Nota',updatedAt:'2026-01-01T00:00:00.000Z',menu:[{id:'cat-1',items:[{id:'dish-1'}]}],images:['data:image/jpeg;base64,abc'],documents:[{id:'pdf-1',blob:new Blob(['pdf'],{type:'application/pdf'})}],ocrText:'OCR',unclassified:[{text:'riga'}],warnings:['warning']});
+
+test('aggiorna tutti i campi anagrafici mantenendo ID e dati associati',()=>{const restaurant=original(),updated=updateRestaurantProfile(restaurant,{name:' Nuovo nome ',city:' Milano ',address:' Via Due ',cuisine:' Fusion ',notes:' Nuova nota '},'2026-08-20T10:00:00.000Z');assert.equal(updated.id,restaurant.id);assert.equal(updated.name,'Nuovo nome');assert.equal(updated.city,'Milano');assert.equal(updated.address,'Via Due');assert.equal(updated.cuisine,'Fusion');assert.equal(updated.notes,'Nuova nota');assert.equal(updated.updatedAt,'2026-08-20T10:00:00.000Z');for(const field of['menu','images','documents','ocrText','unclassified','warnings'])assert.strictEqual(updated[field],restaurant[field])});
+
+test('rifiuta un nome vuoto',()=>{assert.throws(()=>updateRestaurantProfile(original(),{name:'   '}),error=>error.code==='RESTAURANT_NAME_REQUIRED')});
+
+test('put con lo stesso ID aggiorna senza creare duplicati e rende ricercabili i nuovi dati',()=>{const records=new Map(),restaurant=original();records.set(restaurant.id,restaurant);const updated=updateRestaurantProfile(restaurant,{name:'Osteria Verde',city:'Bologna',address:'Via Centro',cuisine:'Vegetariana',notes:''});records.set(updated.id,updated);assert.equal(records.size,1);const search=q=>[...records.values()].filter(r=>[r.name,r.city,r.cuisine,...(r.menu||[]).flatMap(c=>c.items.map(i=>i.name))].join(' ').toLowerCase().includes(q.toLowerCase()));assert.equal(search('Bologna')[0].id,restaurant.id);assert.equal(search('Vecchio nome').length,0)});
+
+test('rileva modifiche e annullamento senza mutare il record originale',()=>{const restaurant=original(),draft={name:restaurant.name,city:restaurant.city,address:restaurant.address,cuisine:restaurant.cuisine,notes:restaurant.notes};assert.equal(profileChanged(restaurant,draft),false);draft.notes='Cambiata';assert.equal(profileChanged(restaurant,draft),true);assert.equal(restaurant.notes,'Nota')});
+
+test('UI espone editor, conferma uscita, toast e persistenza locale senza rete',()=>{const source=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');for(const text of['Modifica ristorante','Salva modifiche','Annulla','Hai modifiche non salvate. Vuoi uscire senza salvarle?','Ristorante aggiornato'])assert.match(source,new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));assert.match(source,/const saveProfile=async changes=>\{const updated=updateRestaurantProfile\(current,changes\);await db\.put\(updated\)/);const block=source.slice(source.indexOf('const saveProfile='),source.indexOf('return <div className="shell"'));assert.doesNotMatch(block,/fetch\(|analyzeWithVision|analyzePdfWithVision/)});

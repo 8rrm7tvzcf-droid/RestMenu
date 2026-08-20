@@ -1,0 +1,7 @@
+.profile-edit-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.profile-edit-actions .cta{margin-top:0}
+.restaurant-profile{margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:white}
+.restaurant-profile p{margin:0;color:#617168;line-height:1.45}
+.restaurant-profile p+p{margin-top:12px}
+.restaurant-profile strong{color:#263c31;font-size:13px}
+@media(max-width:520px){.profile-edit-actions button{width:100%}}

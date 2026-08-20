@@ -1,0 +1,3 @@
+export const profileFields=['name','city','address','cuisine','notes'];
+export function updateRestaurantProfile(restaurant,changes,updatedAt=new Date().toISOString()){const name=String(changes.name||'').trim();if(!name)throw Object.assign(new Error('Il nome del ristorante è obbligatorio.'),{code:'RESTAURANT_NAME_REQUIRED'});return{...restaurant,...Object.fromEntries(profileFields.map(field=>[field,field==='name'?name:String(changes[field]||'').trim()])),id:restaurant.id,updatedAt}}
+export const profileChanged=(restaurant,form)=>profileFields.some(field=>String(restaurant?.[field]||'')!==String(form?.[field]||''));
