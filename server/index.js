@@ -2,7 +2,7 @@ import http from'node:http';import{readFile}from'node:fs/promises';import{extnam
 
 const PORT=process.env.PORT||5173,root=resolve('.'),limit=45*1024*1024;
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webmanifest':'application/manifest+json'};
-const send=(res,status,data)=>{const payload=JSON.stringify(data);res.writeHead(status,{'Content-Type':'application/json','Content-Length':Buffer.byteLength(payload),'Cache-Control':'no-store'});res.end(payload)};
+const send=(res,status,data)=>{const payload=JSON.stringify(data);res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(payload)};
 const devLog=(label,data)=>{if(process.env.NODE_ENV!=='production')console.info(`[RestMenu PDF] ${label}`,data)};
 
 async function loadLocalEnv(){try{const env=await readFile(resolve('.env'),'utf8');for(const line of env.split(/\r?\n/)){const m=line.match(/^\s*([A-Z][A-Z0-9_]*)\s*=\s*(.*)\s*$/);if(m&&!process.env[m[1]])process.env[m[1]]=m[2].replace(/^['"]|['"]$/g,'')}}catch{}}
